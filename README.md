@@ -17,6 +17,15 @@ zoomed to my address).
 As a developer,
 I want to store the 311 data in a database so we can query it more efficiently.
 
+## prerequisites
+
+We recommend using Homebrew to install components on the Mac.
+
+* Postgres database.
+* Postgis. 
+
+If you do not already have these components installed, ask someone on the project to help you get it installed on your machine.
+
 ## get the data
 
 ```
@@ -27,15 +36,18 @@ wget -O 311-calls.csv 'https://data.nola.gov/api/views/3iz8-nghx/rows.csv?access
 ## create the db
 
 ```
+brew install postgres ## if not already installed
+brew install postgis ## if not already installed
 createuser three11
 createdb three11 -O three11
-psql -U postgres -d three11 -c "create extension postgis;"
+psql -d three11 -c "create extension postgis;"
 ```
 
 ## load data into db
 
 ```
 # ogr2ogr is a useful tool for working with geospatial data
+brew install gdal --with-postgres ## if not already installed
 ogr2ogr -f PostgreSQL PG:"host='localhost' dbname='three11' user='three11'" 311-calls.csv -nln calls
 
 # add location column
