@@ -3,59 +3,52 @@
 We want to build something better than the default Socrata 311 site:
 http://311explorer.nola.gov/main/category/
 
-Keep useful features and enhance the user experience:
+Here are some vague user stories explaining the main features:
 
-As a user,
-I want to lookup info about my request (by entering a reference # received from 311).
-I want to visualize ticket types with bar charts (counts) and pie graphs (percentage).
-I want to visualize the data on a map around me and filter by ticket type, open/closed, date range.
-I want to browse curated datasets before exploring the data myself (maybe showing less data that's
+As a citizen,
+* I want to lookup info about my 311 request (by entering a reference # received from 311 or searching my previous history).
+* I want to visualize ticket types with bar charts (counts) and pie graphs (percentage).
+* I want to visualize the data on a map around me and filter and sort by ticket type, open/closed, date range.
+* I want to browse curated datasets before exploring the data myself (maybe showing less data that's
 more recent data will be useful; maybe by sharing my location, I can see more relevant data on a map
 zoomed to my address).
+* I want to see open requests near me.
+* I want to submit issues that integrate with the City's system (the city 311 system can notify the user).
+* I want the ability to choose the amount of information to share about myself (email required to submit ticket?)
+
+Other nice to have features:
+* Commenting and upvoting on issues nearby me
+* Get notified about issues created by others (star/follow)
+* See filter of all issues a user has submitted (email required)
+* Map feature: Request per district (styled where color gets darker for more requests)
+* Frequency: analyze the frequency of 311 incidents (median time, types
+  that stay open the longest, etc)
 
 
-As a developer,
-I want to store the 311 data in a database so we can query it more efficiently.
+## database setup
 
-## prerequisites
-
-We recommend using Homebrew to install components on the Mac.
-
-* Postgres database.
-* Postgis. 
-
-If you do not already have these components installed, ask someone on the project to help you get it installed on your machine.
-
-## get the data
-
-```
-# get bulk call data data.nola.gov
-wget -O 311-calls.csv 'https://data.nola.gov/api/views/3iz8-nghx/rows.csv?accessType=DOWNLOAD'
-```
-
-## create the db
+First you need to install PostgreSQL and PostGIS.  Then you can run the
+commands below to get the 311 data into your database.
 
 ```
-brew install postgres ## if not already installed
-brew install postgis ## if not already installed
-createuser three11
-createdb three11 -O three11
-psql -d three11 -c "create extension postgis;"
+# create the db
+createuser nola311
+createdb nola311 -O nola311
+
+# create the table and import the data from the csv
+psql -U postgres -d nola311 -f schema_and_csv_import.sql
+
+# sanitize the table
+psql -U postgres -d nola311 -f sanitize.sql
 ```
 
-## load data into db
 
+### some sample queries
+
+```sql
+-- what are the top issues that people call about?
+select issue_type, count(*) as num_calls from nola311.calls group by issue_type order by num_calls desc;
+
+-- which council district has the most calls?
+select council_district, count(*) as num_calls from nola311.calls group by council_district order by num_calls desc;
 ```
-# ogr2ogr is a useful tool for working with geospatial data
-brew install gdal --with-postgres ## if not already installed
-ogr2ogr -f PostgreSQL PG:"host='localhost' dbname='three11' user='three11'" 311-calls.csv -nln calls
-
-# add location column
-psql -U three11 -c "ALTER TABLE calls ADD COLUMN the_geom geometry(POINT, 4326);"
-psql -U three11 -c "UPDATE calls SET the_geom = ST_PointFromText(geom, 4326) WHERE geom != '';"
-```
-
-## useful data to know about
-
-Show on map: Request per district (legend gets darker for more requests)
-Frequency: analyze the frequency of 311 incidents
