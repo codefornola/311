@@ -27,8 +27,16 @@ Other nice to have features:
 
 ## database setup
 
-First you need to install PostgreSQL and PostGIS.  Then you can run the
-commands below to get the 311 data into your database.
+First you need to install PostgreSQL and PostGIS.
+
+Once those are available, if you use `bash`, you can just run the `setup.sh`
+script.
+
+```
+sh ./setup.sh
+```
+
+If not, you can run the commands below to get the 311 data into your database.
 
 ```
 # create the db
@@ -36,10 +44,15 @@ createuser nola311
 createdb nola311 -O nola311
 
 # create the table and import the data from the csv
-psql -U postgres -d nola311 -f schema_and_csv_import.sql
+psql -U postgres -d nola311 -f setup/schema_and_csv_import.sql
 
 # sanitize the table
-psql -U postgres -d nola311 -f sanitize.sql
+psql -U postgres -d nola311 -f setup/sanitize.sql
+
+# create views
+psql -U postgres -d nola311 -f views/open_tickets_stats.sql
+psql -U postgres -d nola311 -f views/closed_tickets_stats.sql
+psql -U postgres -d nola311 -f views/call_records_for_review.sql
 ```
 
 
