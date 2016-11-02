@@ -11,7 +11,7 @@ create view nola311.open_tickets_stats as (
 			justify_interval(age(ticket_created_date_time)) as time_open
 		from nola311.calls
 		where ticket_status = 'Open'
-	),
+	)
 	select
 		issue_type,
 		year_created,
@@ -23,3 +23,7 @@ create view nola311.open_tickets_stats as (
 	from open_tickets
 	group by issue_type, year_created, month_created
 );
+
+grant all on nola311.open_tickets_stats to nola311;
+
+-- select * from nola311.open_tickets_stats;

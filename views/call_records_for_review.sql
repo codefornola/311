@@ -27,4 +27,6 @@ create view nola311.call_records_for_review as (
   	and neighborhood_district is null
 );
 
-select * from nola311.call_records_for_review;
+grant all on nola311.call_records_for_review to nola311;
+
+-- select * from nola311.call_records_for_review;
