@@ -26,4 +26,6 @@ create view nola311.closed_tickets_stats as (
 	group by issue_type, year_created, month_created
 );
 
-select * from nola311.closed_tickets_stats;
+grant all on nola311.closed_tickets_stats to nola311;
+
+-- select * from nola311.closed_tickets_stats;
