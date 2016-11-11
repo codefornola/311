@@ -1,6 +1,4 @@
-alter role nola311 set search_path to nola311, public;
-create extension if not exists postgis;
-
+drop table if exists nola311.calls;
 create table nola311.calls as (
   select
     id,
@@ -20,8 +18,6 @@ create table nola311.calls as (
     st_pointfromtext('POINT(' || longitude || ' ' || latitude || ')', 4326) as geom
   from nola311.calls_tmp
 );
-
 comment on table nola311.calls is 'This dataset represents calls to the City of New Orleans'' 311 Call Center';
 
-grant all on schema nola311 to nola311;
 grant all on all tables in schema nola311 to nola311;
