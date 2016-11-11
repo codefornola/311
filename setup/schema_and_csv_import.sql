@@ -40,3 +40,9 @@ copy nola311.calls_tmp (
 )
 from program '/usr/local/bin/wget -q -O - "$@" "https://data.nola.gov/api/views/3iz8-nghx/rows.csv?accessType=DOWNLOAD"'
 with csv header NULL as '';
+
+grant all on schema nola311 to nola311;
+grant all on all tables in schema nola311 to nola311;
+
+alter role nola311 set search_path to nola311, public;
+create extension if not exists postgis;
