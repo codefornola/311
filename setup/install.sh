@@ -3,7 +3,8 @@
 #!/usr/local/bin/bash
 
 # sanitize the tables
-psql -U nola311 -d nola311 -f setup/sanitize.sql
+psql -U nola311 -d nola311 -f setup/sanitize_call_data.sql
+psql -U nola311 -d nola311 -f setup/sanitize_neighborhood_data.sql
 
 # create views
 psql -U nola311 -d nola311 -f views/open_tickets_stats.sql -q
