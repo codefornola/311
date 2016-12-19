@@ -1,4 +1,4 @@
-drop table if exists nola311.calls;
+drop table if exists nola311.calls cascade;
 create table nola311.calls as (
   select
     id,
