@@ -4,39 +4,39 @@ drop view if exists nola311.call_for_details_stats;
 create view nola311.call_for_details_stats as (
   with
   call_for_details as (
-  	select *
-  	from nola311.calls
-  	where issue_type = 'General Service Request'
-  		and issue_description = '[Call 311 for details]'
+    select *
+    from nola311.calls
+    where issue_type = 'General Service Request'
+      and issue_description = '[Call 311 for details]'
   )
   , open_tickets as (
-		select
-		issue_type,
-		issue_description,
-      ticket_status,
-			extract(year from ticket_created_date_time) as year_created,
-			extract(quarter from ticket_created_date_time) as qtr_created,
-			justify_interval(age(ticket_created_date_time)) as time_open
-		from call_for_details
-		where ticket_status = 'Open'
-	)
-  , closed_tickets as (
-		select
-		issue_type,
-		issue_description,
+    select
+      issue_type,
+      issue_description,
       ticket_status,
       extract(year from ticket_created_date_time) as year_created,
-			extract(quarter from ticket_created_date_time) as qtr_created,
-			extract(year from ticket_closed_date_time) as year_closed,
-			extract(quarter from ticket_closed_date_time) as qtr_closed,
-			justify_interval(ticket_closed_date_time - ticket_created_date_time) as time_to_close
-		from call_for_details
-		where ticket_status = 'Closed'
-	)
+      extract(quarter from ticket_created_date_time) as qtr_created,
+      justify_interval(age(ticket_created_date_time)) as time_open
+    from call_for_details
+    where ticket_status = 'Open'
+  )
+  , closed_tickets as (
+    select
+      issue_type,
+      issue_description,
+      ticket_status,
+      extract(year from ticket_created_date_time) as year_created,
+      extract(quarter from ticket_created_date_time) as qtr_created,
+      extract(year from ticket_closed_date_time) as year_closed,
+      extract(quarter from ticket_closed_date_time) as qtr_closed,
+      justify_interval(ticket_closed_date_time - ticket_created_date_time) as time_to_close
+    from call_for_details
+    where ticket_status = 'Closed'
+  )
   , open_stats as (
     select
-		issue_type,
-		issue_description,
+      issue_type,
+      issue_description,
       ticket_status,
       year_created,
       qtr_created,
@@ -53,23 +53,23 @@ create view nola311.call_for_details_stats as (
     group by issue_type, issue_description, ticket_status, year_created, qtr_created
   )
   , closed_stats as (
-  	select
-		issue_type,
-		issue_description,
-		ticket_status,
-		year_created,
-		qtr_created,
-		count(*) as number_closed,
-  		justify_interval(min(time_to_close)) as min_time_to_close,
-  		justify_interval(percentile_cont(0.1) within group (order by time_to_close)) as perc10_time_to_close,
-  		justify_interval(percentile_cont(0.25) within group (order by time_to_close)) as perc25_time_to_close,
-  		justify_interval(avg(time_to_close)) as avg_time_to_close,
-  		justify_interval(percentile_cont(0.5) within group (order by time_to_close)) as median_time_to_close,
-  		justify_interval(percentile_cont(0.75) within group (order by time_to_close)) as perc75_time_to_close,
-  		justify_interval(percentile_cont(0.9) within group (order by time_to_close)) as perc90_time_to_close,
-  		justify_interval(max(time_to_close)) as max_time_to_close
-  	from closed_tickets
-  	group by issue_type, issue_description, ticket_status, year_created, qtr_created
+    select
+      issue_type,
+      issue_description,
+      ticket_status,
+      year_created,
+      qtr_created,
+      count(*) as number_closed,
+      justify_interval(min(time_to_close)) as min_time_to_close,
+      justify_interval(percentile_cont(0.1) within group (order by time_to_close)) as perc10_time_to_close,
+      justify_interval(percentile_cont(0.25) within group (order by time_to_close)) as perc25_time_to_close,
+      justify_interval(avg(time_to_close)) as avg_time_to_close,
+      justify_interval(percentile_cont(0.5) within group (order by time_to_close)) as median_time_to_close,
+      justify_interval(percentile_cont(0.75) within group (order by time_to_close)) as perc75_time_to_close,
+      justify_interval(percentile_cont(0.9) within group (order by time_to_close)) as perc90_time_to_close,
+      justify_interval(max(time_to_close)) as max_time_to_close
+    from closed_tickets
+    group by issue_type, issue_description, ticket_status, year_created, qtr_created
   )
   select
     coalesce(op.year_created, cl.year_created) as year_created,
