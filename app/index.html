@@ -1,6 +1,161 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <title>311 calls</title>
+    <link rel="stylesheet" href="//openlayers.org/en/v3.20.1/css/ol.css" type="text/css">
+    <script src="//openlayers.org/en/v3.20.1/build/ol.js"></script>
+    <style>
+      html, body {
+        margin: 0;     /* Remove margins */
+        height: 100%;  /* Fill the window */
+      }
+      .container {
+        height: 100%;  /* Fill the window */
+        display: flex;
+      }
+      #map {
+        flex: 2;       /* Fill the available space */
+      }
+      #info {
+        min-height: 0; /* Let the content overflow */
+        flex: 2;       /* Fill the available space */
+      }
+    </style>
+  </head>
   <body>
-    <h1>Welcome to the 311 webapp</h1>
+    <div class="container">
+      <div id="map" class="map"></div>
+      <div id="info">&nbsp;</div>
+    </div>
+    <script>
+      var style = new ol.style.Style({
+        fill: new ol.style.Fill({
+          color: 'rgba(255, 255, 255, 0.6)'
+        }),
+        stroke: new ol.style.Stroke({
+          color: '#319FD3',
+          width: 1
+        }),
+        text: new ol.style.Text({
+          font: '12px Calibri,sans-serif',
+          fill: new ol.style.Fill({
+            color: '#000'
+          }),
+          stroke: new ol.style.Stroke({
+            color: '#fff',
+            width: 3
+          })
+        })
+      });
+
+      var neighborhoodsLayer = new ol.layer.Vector({
+        source: new ol.source.Vector({
+          url: 'http://gis.nola.gov:6080/arcgis/rest/services/Admininstrative/NeighborhoodStatisticalAreas/MapServer/0/query?where=1%3D1&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&resultOffset=&resultRecordCount=&f=geojson',
+          format: new ol.format.GeoJSON()
+        }),
+        style: function(feature, resolution) {
+          style.getText().setText(resolution < 5000 ? feature.get('NAME') : '');
+          return style;
+        }
+      });
+
+      var councilDistrictsLayer = new ol.layer.Vector({
+        source: new ol.source.Vector({
+          url: 'http://gis.nola.gov:6080/arcgis/rest/services/Admininstrative/CityCouncilDistricts/MapServer/0/query?where=1%3D1&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&resultOffset=&resultRecordCount=&f=geojson',
+          format: new ol.format.GeoJSON()
+        }),
+        // hide this layer for now b/c neigborhoods are more interesting
+        visible: false,
+      });
+
+      var map = new ol.Map({
+        layers: [
+          new ol.layer.Tile({
+            source: new ol.source.OSM()
+          }),
+          neighborhoodsLayer,
+          councilDistrictsLayer
+        ],
+        target: 'map',
+        view: new ol.View({
+          center: ol.proj.fromLonLat([-90.03234500420962, 29.957576833881717]),
+          zoom: 12
+        })
+      });
+
+      var highlightStyleCache = {};
+
+      var featureOverlay = new ol.layer.Vector({
+        source: new ol.source.Vector(),
+        map: map,
+        style: function(feature, resolution) {
+          return new ol.style.Style({
+              stroke: new ol.style.Stroke({
+                color: '#f00',
+                width: 1
+              }),
+              fill: new ol.style.Fill({
+                color: 'rgba(255,0,0,0.1)'
+              }),
+            });
+        }
+      });
+
+      var highlight;
+
+      var displayFeatureInfo = function(pixel) {
+
+        var feature = map.forEachFeatureAtPixel(pixel, function(feature) {
+          return feature;
+        });
+
+        var info = document.getElementById('info');
+
+        // if a feature exists at this point, display info about it
+        if (feature) {
+          var neighborhood = feature.get('GNOCDC_LAB');
+          info.innerHTML = '<h2>'+ neighborhood +'</h2>';
+          // TODO: get neighborhood aggregation data
+        } else {
+          info.innerHTML = '&nbsp;';
+        }
+
+        if (feature !== highlight) {
+          if (highlight) {
+            featureOverlay.getSource().removeFeature(highlight);
+          }
+          if (feature) {
+            featureOverlay.getSource().addFeature(feature);
+          }
+          highlight = feature;
+        }
+
+      };
+
+      var fitMapToNeighborhood = function(pixel) {
+        var feature = map.forEachFeatureAtPixel(pixel,
+          function(feature) { return feature; }
+          // todo: filter on neighborhoodsLayer
+        );
+        if (feature) {
+          map.getView().fit(feature.getGeometry().getExtent(), map.getSize(), {
+            duration: 500,
+          });
+        }
+      };
+
+      map.on('pointermove', function(evt) {
+        if (evt.dragging) {
+          return;
+        }
+        var pixel = map.getEventPixel(evt.originalEvent);
+        displayFeatureInfo(pixel);
+      });
+
+      map.on('click', function(evt) {
+        var pixel = map.getEventPixel(evt.originalEvent);
+        fitMapToNeighborhood(pixel);
+      });
+    </script>
   </body>
 </html>
