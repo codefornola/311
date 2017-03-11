@@ -291,6 +291,35 @@
         visible: false,
       });
 
+      var geolocation = new ol.Geolocation({
+        projection: ol.proj.get('EPSG:3857'),
+        tracking: true
+      });
+      var userLocation = new ol.Feature();
+      userLocation.setStyle(new ol.style.Style({
+        image: new ol.style.Circle({
+          radius: 6,
+          fill: new ol.style.Fill({
+            color: '#3399CC'
+          }),
+          stroke: new ol.style.Stroke({
+            color: '#fff',
+            width: 2
+          })
+        })
+      }));
+      geolocation.on('change:position', function() {
+        var coordinates = geolocation.getPosition();
+        userLocation.setGeometry(coordinates ? new ol.geom.Point(coordinates) : null);
+        map.getView().setCenter(coordinates);
+        map.getView().setZoom(18);
+      });
+      var userLocationLayer = new ol.layer.Vector({
+        source: new ol.source.Vector({
+          features: [userLocation]
+        })
+      });
+
       var map = new ol.Map({
         layers: [
           new ol.layer.Tile({
@@ -299,7 +328,8 @@
             })
           }),
           neighborhoodsLayer,
-          councilDistrictsLayer
+          councilDistrictsLayer,
+          userLocationLayer
         ],
         target: 'map',
         view: new ol.View({
