@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>311 calls</title>
+    <link rel="stylesheet" href="//openlayers.org/en/v4.0.1/css/ol.css" type="text/css">
+    <script src="//openlayers.org/en/v4.0.1/build/ol-debug.js"></script>
+    <style>
+      html, body {
+        margin: 0;     /* Remove margins */
+        height: 100%;  /* Fill the window */
+      }
+      .container {
+        height: 100%;  /* Fill the window */
+        display: flex;
+      }
+      #map {
+        flex: 2;       /* Fill the available space */
+      }
+      #info {
+        min-height: 0; /* Let the content overflow */
+        flex: 2;       /* Fill the available space */
+      }
+      .filter-panel {
+        font: 12px/20px Arial;
+        position: absolute;
+        width: 25%;
+        top: 0;
+        left: 0;
+        padding: 10px;
+        background-color: #fff;
+      }
+      .filter-panel div {
+        /*border: 1px solid grey;*/
+        padding: 15px 0 5px 0;
+      }
+      .filter-panel input {
+        background-color: transparent;
+        display: inline-block;
+        width: 100%;
+        position: relative;
+        margin: 0;
+        cursor: ew-resize;
+      }
+      h2 {
+        display: inline;
+        color: #000;
+        font-size: 20px;
+        padding-top: 5px;
+        font-weight: normal;
+      }
+      .open-closed-filter {
+        padding: 10px 0 10px 0;
+      }
+      .open-closed-filter label {
+        /*float: right;*/
+        margin-left: 10px;
+        /*margin-top: 13px;*/
+        font-size: 15px;
+      }
+      .open-closed-filter input[type=checkbox] {
+        width:20px;
+        height:20px;
+      }
+      #month {
+        color: #000;
+        font-size: 20px;
+        padding-top: 5px;
+        margin-left: 8px;
+      }
+      .neighborhoods-filter ul {
+        border-left: 1px solid #eee;
+        border-right: 1px solid #eee;
+        padding: 0px;
+        background-color: transparent;
+        margin-top: 0px;
+      }
+      .neighborhoods-filter li {
+        list-style-type: none;
+        padding: 3px;
+        background-color: transparent;
+      }
+      .neighborhoods-filter li:last-child {
+        border-bottom: 1px solid #eee;
+      }
+
+      .neighborhoods-filter li:hover {
+        background-color: #eee;
+      }
+      .neighborhoods-filter input[type=search] {
+        font-size: 10pt;
+        padding:10px;
+      }
+
+      /* slider styles */
+      input[type=range] {
+        -webkit-appearance: none;
+        width: 100%;
+        margin: 17.6px 0;
+      }
+      input[type=range]:focus {
+        outline: none;
+      }
+      input[type=range]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 7.8px;
+        cursor: pointer;
+        box-shadow: 0.6px 0.6px 0.9px #000000, 0px 0px 0.6px #0d0d0d;
+        background: #ffffff;
+        border-radius: 0px;
+        border: 0.3px solid rgba(1, 1, 1, 0);
+      }
+      input[type=range]::-webkit-slider-thumb {
+        box-shadow: 0.3px 0.3px 0px #000000, 0px 0px 0.3px #0d0d0d;
+        border: 0px solid #000000;
+        height: 43px;
+        width: 13px;
+        border-radius: 0px;
+        background: #000000;
+        cursor: pointer;
+        -webkit-appearance: none;
+        margin-top: -17.9px;
+      }
+      input[type=range]:focus::-webkit-slider-runnable-track {
+        background: #ffffff;
+      }
+      input[type=range]::-moz-range-track {
+        width: 100%;
+        height: 7.8px;
+        cursor: pointer;
+        box-shadow: 0.6px 0.6px 0.9px #000000, 0px 0px 0.6px #0d0d0d;
+        background: #ffffff;
+        border-radius: 0px;
+        border: 0.3px solid rgba(1, 1, 1, 0);
+      }
+      input[type=range]::-moz-range-thumb {
+        box-shadow: 0.3px 0.3px 0px #000000, 0px 0px 0.3px #0d0d0d;
+        border: 0px solid #000000;
+        height: 43px;
+        width: 13px;
+        border-radius: 0px;
+        background: #000000;
+        cursor: pointer;
+      }
+      input[type=range]::-ms-track {
+        width: 100%;
+        height: 7.8px;
+        cursor: pointer;
+        background: transparent;
+        border-color: transparent;
+        color: transparent;
+      }
+      input[type=range]::-ms-fill-lower {
+        background: #f2f2f2;
+        border: 0.3px solid rgba(1, 1, 1, 0);
+        border-radius: 0px;
+        box-shadow: 0.6px 0.6px 0.9px #000000, 0px 0px 0.6px #0d0d0d;
+      }
+      input[type=range]::-ms-fill-upper {
+        background: #ffffff;
+        border: 0.3px solid rgba(1, 1, 1, 0);
+        border-radius: 0px;
+        box-shadow: 0.6px 0.6px 0.9px #000000, 0px 0px 0.6px #0d0d0d;
+      }
+      input[type=range]::-ms-thumb {
+        box-shadow: 0.3px 0.3px 0px #000000, 0px 0px 0.3px #0d0d0d;
+        border: 0px solid #000000;
+        height: 43px;
+        width: 13px;
+        border-radius: 0px;
+        background: #000000;
+        cursor: pointer;
+        height: 7.8px;
+      }
+      input[type=range]:focus::-ms-fill-lower {
+        background: #ffffff;
+      }
+      input[type=range]:focus::-ms-fill-upper {
+        background: #ffffff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div id="map" class="map"></div>
+      <div id="info">&nbsp;</div>
+      <div class="filter-panel">
+        <div class="open-closed-filter">
+          <h2>Status:</h2>
+          <label><input type="checkbox" name="checkbox" value="Open" checked>Open</label>
+          <label><input type="checkbox" name="checkbox" value="Closed">Closed</label>
+        </div>
+        <div class="date-slider">
+          <h2>Date:</h2>
+          <label id="month"></label>
+          <input id="slider" type="range" min="0" max="0" step="1" value="0" />
+        </div>
+        <div class="neighborhoods-filter">
+          <input type="search" placeholder="Filter by neighborhood" onkeyup="filterNeighborhoods()"/>
+          <ul></ul>
+        </div>
+      </div>
+    </div>
+    <script>
+    <!-- filter by issue type component...todo:faceted  -->
+
+
+    <!-- filter by date range component -->
+    const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    const years = ["2012","2013","2014","2015","2016","2017"];
+    const dates = years.map(y => months.map(m => m + ' ' + y))
+                       .reduce((acc,cur) => acc.concat(cur), [])
+                       .slice(2, -(11-new Date().getMonth()));
+    document.getElementById('slider').setAttribute('max', dates.length-1);
+    document.getElementById('slider').setAttribute('value', dates.length-1);
+    document.getElementById('month').textContent = dates[dates.length-1];
+
+    document.getElementById('slider').addEventListener('input', function(e) {
+        var monthYearIdx = parseInt(e.target.value);
+        document.getElementById('month').textContent = dates[monthYearIdx];
+    });
+
+    <!-- filter by neighborhood component -->
+    var neighborhoods = ["U.S. NAVAL BASE", "ALGIERS POINT", "WHITNEY", "AUDUBON", "OLD AURORA", "B. W. COOPER", "BAYOU ST. JOHN", "BEHRMAN", "BLACK PEARL", "BROADMOOR", "BYWATER", "CENTRAL BUSINESS DISTRICT", "CENTRAL CITY", "CITY PARK", "DESIRE AREA", "DILLARD", "DIXON", "EAST CARROLLTON", "EAST RIVERSIDE", "LITTLE WOODS", "FAIRGROUNDS", "FILLMORE", "FISCHER DEV", "FLORIDA AREA", "FLORIDA DEV", "FRERET", "GARDEN DISTRICT", "GENTILLY TERRACE", "GENTILLY WOODS", "GERT TOWN", "HOLLYGROVE", "HOLY CROSS", "IBERVILLE", "IRISH CHANNEL", "LAKE CATHERINE", "LAKE TERRACE & OAKS", "LAKESHORE - LAKE VISTA", "LAKEVIEW", "LAKEWOOD", "WEST END", "LEONIDAS", "LOWER GARDEN DISTRICT", "LOWER NINTH WARD", "MARIGNY", "MARLYVILLE - FONTAINBLEAU", "McDONOGH", "MID-CITY", "MILAN", "MILNEBURG", "NAVARRE", "PINES VILLAGE", "PLUM ORCHARD", "PONTCHARTRAIN PARK", "READ BLVD EAST", "READ BLVD WEST", "NEW AURORA - ENGLISH TURN", "SEVENTH WARD", "TREME - LAFITTE", "ST.  ANTHONY", "ST. BERNARD AREA", "ST. CLAUDE", "ST. ROCH", "ST. THOMAS DEV", "TALL TIMBERS - BRECHTEL", "TOURO", "TULANE - GRAVIER", "UPTOWN", "VIAVANT - VENETIAN ISLES", "FRENCH QUARTER", "VILLAGE DE LEST", "WEST LAKE FOREST", "WEST RIVERSIDE"];
+    var filterNeighborhoods = function(evt) {
+      var searchText = this.event.target.value;
+      var results = neighborhoods.filter(function(n) {
+        return n.indexOf(searchText.toUpperCase()) > -1;
+      });
+      var ul = document.querySelector('.neighborhoods-filter ul');
+      ul.innerHTML = "";
+      results.map(function(n) {
+        var li = document.createElement('li');
+        li.innerHTML = n;
+        li.addEventListener('click', function() {
+          document.querySelector('.neighborhoods-filter input').value = n;
+          ul.innerHTML = "";
+
+          var feature = neighborhoodsLayer.getSource().forEachFeature(
+            (f) => {
+              if(f.get('GNOCDC_LAB') === n) {
+                var coord = f.getGeometry().getInteriorPoint().getCoordinates();
+                var pixel = map.getPixelFromCoordinate(coord);
+                fitMapToNeighborhood(pixel);
+                displayFeatureInfo(pixel);
+              }
+            }
+          );
+
+        });
+        ul.appendChild(li);
+      });
+    };
+
+      var style = new ol.style.Style({
+        fill: new ol.style.Fill({
+          color: 'rgba(255, 255, 255, 0.1)'
+        }),
+        stroke: new ol.style.Stroke({
+          color: '#f0f0f0',
+          width: 1
+        }),
+        text: new ol.style.Text({
+          font: '12px Calibri,sans-serif',
+          fill: new ol.style.Fill({
+            color: '#000'
+          }),
+          stroke: new ol.style.Stroke({
+            color: '#fff',
+            width: 3
+          })
+        })
+      });
+
+      var neighborhoodsLayer = new ol.layer.Vector({
+        source: new ol.source.Vector({
+          url: 'https://gis.nola.gov/arcgis/rest/services/Admininstrative/NeighborhoodStatisticalAreas/MapServer/0/query?where=1%3D1&f=geojson',
+          format: new ol.format.GeoJSON()
+        }),
+        style: function(feature, resolution) {
+          style.getText().setText(resolution < 5000 ? feature.get('NAME') : '');
+          return style;
+        }
+      });
+
+      var councilDistrictsLayer = new ol.layer.Vector({
+        source: new ol.source.Vector({
+          url: 'https://gis.nola.gov/arcgis/rest/services/Admininstrative/CityCouncilDistricts/MapServer/0/query?where=1%3D1&f=geojson',
+          format: new ol.format.GeoJSON()
+        }),
+        // hide this layer for now b/c neigborhoods are more interesting
+        visible: false,
+      });
+
+      var geolocation = new ol.Geolocation({
+        projection: ol.proj.get('EPSG:3857'),
+        tracking: true
+      });
+      var userLocation = new ol.Feature();
+      userLocation.setStyle(new ol.style.Style({
+        image: new ol.style.Circle({
+          radius: 6,
+          fill: new ol.style.Fill({
+            color: '#3399CC'
+          }),
+          stroke: new ol.style.Stroke({
+            color: '#fff',
+            width: 2
+          })
+        })
+      }));
+      geolocation.on('change:position', function() {
+        var coordinates = geolocation.getPosition();
+        userLocation.setGeometry(coordinates ? new ol.geom.Point(coordinates) : null);
+        map.getView().setCenter(coordinates);
+        map.getView().setZoom(18);
+      });
+      var userLocationLayer = new ol.layer.Vector({
+        source: new ol.source.Vector({
+          features: [userLocation]
+        })
+      });
+
+      var map = new ol.Map({
+        layers: [
+          new ol.layer.Tile({
+            source: new ol.source.XYZ({
+              url: 'https://api.mapbox.com/styles/v1/mapbox/dark-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY29kZWZvcm5vbGEiLCJhIjoiY2owNWw1Z212MG0zYjJwcWxsYnJsNndwMSJ9.K3u-S9UT_m-OQ9k5c3kPXA'
+            })
+          }),
+          neighborhoodsLayer,
+          councilDistrictsLayer,
+          userLocationLayer
+        ],
+        target: 'map',
+        view: new ol.View({
+          center: ol.proj.fromLonLat([-90.03234500420962, 29.957576833881717]),
+          zoom: 12
+        }),
+        controls: [],
+      });
+
+      var highlightStyleCache = {};
+
+      var featureOverlay = new ol.layer.Vector({
+        source: new ol.source.Vector(),
+        map: map,
+        style: function(feature, resolution) {
+          return new ol.style.Style({
+              stroke: new ol.style.Stroke({
+                color: '#f00',
+                width: 1
+              }),
+              fill: new ol.style.Fill({
+                color: 'rgba(255,0,0,0.1)'
+              }),
+            });
+        }
+      });
+
+      var highlight;
+
+      var displayFeatureInfo = function(pixel) {
+
+        var feature = map.forEachFeatureAtPixel(pixel, function(feature) {
+          return feature;
+        });
+
+        var info = document.getElementById('info');
+
+        // if a feature exists at this point, display info about it
+        if (feature) {
+          var neighborhood = feature.get('GNOCDC_LAB');
+          info.innerHTML = '<h2>'+ neighborhood +'</h2>';
+          // TODO: get neighborhood aggregation data
+        } else {
+          info.innerHTML = '&nbsp;';
+        }
+
+        if (feature !== highlight) {
+          if (highlight) {
+            featureOverlay.getSource().removeFeature(highlight);
+          }
+          if (feature) {
+            featureOverlay.getSource().addFeature(feature);
+          }
+          highlight = feature;
+        }
+
+      };
+
+      var fitMapToNeighborhood = function(pixel) {
+        var feature = map.forEachFeatureAtPixel(pixel,
+          function(feature) { return feature; }
+          // todo: filter on neighborhoodsLayer
+        );
+        if (feature) {
+          map.getView().fit(feature.getGeometry().getExtent(), map.getSize(), {
+            duration: 500,
+          });
+        }
+      };
+
+      map.on('pointermove', function(evt) {
+        if (evt.dragging) {
+          return;
+        }
+        var pixel = map.getEventPixel(evt.originalEvent);
+        displayFeatureInfo(pixel);
+      });
+
+      map.on('click', function(evt) {
+        var pixel = map.getEventPixel(evt.originalEvent);
+        fitMapToNeighborhood(pixel);
+      });
+
+    </script>
+  </body>
+</html>
