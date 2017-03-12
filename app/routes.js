@@ -7,6 +7,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/calls', db.findAllCalls);
+router.get('/calls/types/totals', db.findCallTypeTotals);
 router.get('/calls/:ticketId', db.findCallsByTicketId);
 
 

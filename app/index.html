@@ -4,6 +4,7 @@
     <title>311 calls</title>
     <link rel="stylesheet" href="//openlayers.org/en/v4.0.1/css/ol.css" type="text/css">
     <script src="//openlayers.org/en/v4.0.1/build/ol.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.bundle.js"></script>
     <style>
       html, body {
         margin: 0;     /* Remove margins */
@@ -16,7 +17,7 @@
       #map {
         flex: 2;       /* Fill the available space */
       }
-      #info {
+      #stats {
         min-height: 0; /* Let the content overflow */
         flex: 2;       /* Fill the available space */
       }
@@ -182,7 +183,10 @@
   <body>
     <div class="container">
       <div id="map" class="map"></div>
-      <div id="info">&nbsp;</div>
+      <div id="stats">
+        <div id="neighborhoodName"></div>
+        <canvas id="callsTypesChart" width="400" height="400"></canvas>
+      </div>
       <div class="filter-panel">
         <div class="open-closed-filter">
           <h2>Status:</h2>
@@ -200,6 +204,7 @@
         </div>
       </div>
     </div>
+
     <script>
     <!-- filter by issue type component...todo:faceted  -->
 
@@ -365,15 +370,15 @@
           return feature;
         });
 
-        var info = document.getElementById('info');
+        var neighborhoodName = document.getElementById('neighborhoodName');
 
         // if a feature exists at this point, display info about it
         if (feature) {
           var neighborhood = feature.get('GNOCDC_LAB');
-          info.innerHTML = '<h2>'+ neighborhood +'</h2>';
+          neighborhoodName.innerHTML = '<h2>'+ neighborhood +'</h2>';
           // TODO: get neighborhood aggregation data
         } else {
-          info.innerHTML = '&nbsp;';
+          neighborhoodName.innerHTML = '&nbsp;';
         }
 
         if (feature !== highlight) {
@@ -412,6 +417,62 @@
         var pixel = map.getEventPixel(evt.originalEvent);
         fitMapToNeighborhood(pixel);
       });
+
+      window.chartColors = {
+        red: 'rgb(255, 99, 132)',
+        orange: 'rgb(255, 159, 64)',
+        yellow: 'rgb(255, 205, 86)',
+        green: 'rgb(75, 192, 192)',
+        blue: 'rgb(54, 162, 235)',
+        purple: 'rgb(153, 102, 255)',
+        grey: 'rgb(231,233,237)'
+      };
+      var color = Chart.helpers.color;
+      // gets call data for bar chart
+      var getCallTotalsChart = async function() {
+        var response = await fetch('http://localhost:3000/api/calls/types/totals');
+        var res = await response.json();
+        var data = res.data;
+        let callTypes = data.reduce(function(types, data) {
+          return types.concat(data.issue_type);
+        }, []);
+        let callTypeTotals = data.reduce(function(types, data) {
+          return types.concat(data.total);
+        }, []);
+        // see: http://www.chartjs.org/docs/#bar-chart-dataset-structure
+        var chartData = {
+          labels: callTypes,
+          datasets: [{
+            label: 'All 311 calls by type',
+            data: callTypeTotals,
+            backgroundColor: color(chartColors.red).alpha(0.5).rgbString(),
+            borderColor: chartColors.red,
+            borderWidth: 1,
+          }],
+        };
+        var myChart = new Chart(ctx, {
+          type: 'horizontalBar',
+          data: chartData,
+          options: {
+                     // Elements options apply to all of the options unless overridden in a dataset
+                     // In this case, we are setting the border of each horizontal bar to be 2px wide
+                     elements: {
+                         rectangle: {
+                             borderWidth: 2,
+                         }
+                     },
+                     responsive: true,
+                     legend: {
+                         position: 'right',
+                     },
+                     legend: {
+                       display: false
+                     },
+                 }
+          });
+      };
+      var ctx = document.getElementById('callsTypesChart');
+      getCallTotalsChart();
     </script>
   </body>
 </html>
