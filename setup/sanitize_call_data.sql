@@ -21,4 +21,6 @@ create table nola311.calls as (
 
 comment on table nola311.calls is 'This dataset represents calls to the City of New Orleans'' 311 Call Center';
 
+grant all on schema nola311 to nola311;
 grant all on all tables in schema nola311 to nola311;
+grant all on all sequences in schema nola311 to nola311;

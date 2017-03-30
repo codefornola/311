@@ -29,39 +29,17 @@ Other nice to have features:
 
 First you need to install PostgreSQL and PostGIS.
 
-Once those are available, if you use `bash`, you can just run the `setup.sh`
-script.
+Once those are available, you can run the `setup.sh` script:
 
 ```
 ./setup.sh
 ```
 
-If not, you can run the commands below to get the 311 data into your database.
+If you are loading the data into a remote database, use environment variables
+to tell the script where to load:
 
 ```
-# identify where to save the two data files
-call_data_file="./nola311_raw.csv"
-neighborhood_areas_file="./neighborhood_areas.geo.json"
-
-# create the db
-createuser nola311
-createdb nola311 -O nola311
-
-# download the source data
-/usr/local/bin/wget --show-progress -O "$call_data_file" "https://data.nola.gov/api/views/3iz8-nghx/rows.csv?accessType=DOWNLOAD"
-/usr/local/bin/wget --show-progress -O "$neighborhood_areas_file" "http://portal.nolagis.opendata.arcgis.com/datasets/e7daa4c977d14e1b9e2fa4d7aff81e59_0.geojson"
-
-# create the table and import the data from the csv
-psql --set=call_data_file="$call_data_file" --set=neighborhood_areas_file="$neighborhood_areas_file" -U postgres -d nola311 -f setup/schema_and_csv_import.sql
-
-# sanitize the table
-psql -U nola311 -d nola311 -f setup/sanitize.sql
-
-# create views
-psql -U nola311 -d nola311 -f views/open_tickets_stats.sql
-psql -U nola311 -d nola311 -f views/closed_tickets_stats.sql
-psql -U nola311 -d nola311 -f views/call_records_for_review.sql
-psql -U nola311 -d nola311 -f views/call_records_with_call_for_details.sql
+DB_USER=nola311 DB_NAME=nola311 DB_HOST=c2rp0kujqp.us-east-1.rds.amazonaws.com ./setup.sh
 ```
 
 ## some sample queries

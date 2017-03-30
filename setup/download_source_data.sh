@@ -34,10 +34,3 @@ fi
 
 echo ""
 echo "Data downloaded to $data_dir."
-echo ""
-echo "Setting up schemas and importing data"
-
-# Call script to create schemas and import data, passing file locations
-psql --set=call_data_file="$call_data_file" \
-     --set=neighborhood_areas_file="$neighborhood_areas_file" \
-     -U postgres -d nola311 -f setup/schema_and_csv_import.sql
