@@ -27,4 +27,6 @@ from json_geo_records t
 
 comment on table nola311.neighborhoods is 'This dataset contains geojson features and related metadata for New Orleans'' neighborhoods per GNO CDC.';
 
+grant all on schema nola311 to nola311;
 grant all on all tables in schema nola311 to nola311;
+grant all on all sequences in schema nola311 to nola311;
