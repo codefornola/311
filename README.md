@@ -44,6 +44,8 @@ DB_USER=nola311 DB_NAME=nola311 DB_HOST=c2rp0kujqp.us-east-1.rds.amazonaws.com .
 
 ## some sample queries
 
+Login to the db with psql `psql -h localhost -U nola311` and run some queries:
+
 ```sql
 -- what are the top issues that people call about?
 select issue_type, count(*) as num_calls from nola311.calls group by issue_type order by num_calls desc;
