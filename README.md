@@ -52,4 +52,11 @@ select issue_type, count(*) as num_calls from nola311.calls group by issue_type 
 
 -- which council district has the most calls?
 select council_district, count(*) as num_calls from nola311.calls group by council_district order by num_calls desc;
+
+-- how many pothole calls have been opened and closed this year?
+select ticket_status, count(*) as total from nola311.calls where issue_type = 'Pothole/Roadway Surface Repair' and ticket_created_date_time >= '2017-01-01'::date group by ticket_status;
+
+--- dont forget to checkout the views 
+
+select * from open_tickets_stats where issue_type = 'Catch Basin Maintenance' and year_created = '2017';
 ```
