@@ -1,4 +1,4 @@
-# 311 app
+# 311 app 
 
 We want to build something better than the default Socrata 311 site:
 http://311explorer.nola.gov/main/category/
@@ -23,6 +23,13 @@ Other nice to have features:
 * Map feature: Request per district (styled where color gets darker for more requests)
 * Frequency: analyze the frequency of 311 incidents (median time, types
   that stay open the longest, etc)
+
+
+## prerequisites
+
+Download and install Python and Node.js. The links for the download pages are listed below.
+https://www.python.org/downloads/  
+https://nodejs.org/en/download/current/
 
 
 ## database setup
