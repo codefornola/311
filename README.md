@@ -29,6 +29,10 @@ Other nice to have features:
 
 First you need to install PostgreSQL and PostGIS.
 
+Also download and install Python and Node.js. The links for the download pages are below.
+https://www.python.org/downloads/
+https://nodejs.org/en/download/current/
+
 Once those are available, you can run the `setup.sh` script:
 
 ```
