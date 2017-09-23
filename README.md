@@ -1,4 +1,4 @@
-# 311 app
+# 311 app 
 
 We want to build something better than the default Socrata 311 site:
 http://311explorer.nola.gov/main/category/
@@ -25,7 +25,7 @@ Other nice to have features:
   that stay open the longest, etc)
 
 
-## Prerequisites
+## prerequisites
 
 Download and install Python and Node.js. The links for the download pages are listed below.
 https://www.python.org/downloads/  
