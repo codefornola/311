@@ -39,7 +39,7 @@ If you are loading the data into a remote database, use environment variables
 to tell the script where to load:
 
 ```
-NOLA311_DB_USER=nola311 NOLA311_DB_NAME=nola311 NOLA311_DB_HOST=c2rp0kujqp.us-east-1.rds.amazonaws.com ./setup.sh
+NOLA311_DB_USER=nola311 NOLA311_DB_NAME=nola311 NOLA311_DB_HOST=c2rp0kujqp.us-east-1.rds.amazonaws.com NOLA311_DB_PORT=5432 ./setup.sh
 ```
 
 ## some sample queries
