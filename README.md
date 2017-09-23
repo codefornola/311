@@ -1,4 +1,4 @@
-# 311 app
+# 311 app 
 
 We want to build something better than the default Socrata 311 site:
 http://311explorer.nola.gov/main/category/
@@ -25,6 +25,13 @@ Other nice to have features:
   that stay open the longest, etc)
 
 
+## prerequisites
+
+Download and install Python and Node.js. The links for the download pages are listed below.
+https://www.python.org/downloads/  
+https://nodejs.org/en/download/current/
+
+
 ## database setup
 
 First you need to install PostgreSQL and PostGIS.
@@ -39,7 +46,7 @@ If you are loading the data into a remote database, use environment variables
 to tell the script where to load:
 
 ```
-DB_USER=nola311 DB_NAME=nola311 DB_HOST=c2rp0kujqp.us-east-1.rds.amazonaws.com ./setup.sh
+NOLA311_DB_USER=nola311 NOLA311_DB_NAME=nola311 NOLA311_DB_HOST=c2rp0kujqp.us-east-1.rds.amazonaws.com NOLA311_DB_PORT=5432 ./setup.sh
 ```
 
 ## some sample queries
@@ -56,7 +63,7 @@ select council_district, count(*) as num_calls from nola311.calls group by counc
 -- how many pothole calls have been opened and closed this year?
 select ticket_status, count(*) as total from nola311.calls where issue_type = 'Pothole/Roadway Surface Repair' and ticket_created_date_time >= '2017-01-01'::date group by ticket_status;
 
---- dont forget to checkout the views 
+--- dont forget to checkout the views
 
 select * from open_tickets_stats where issue_type = 'Catch Basin Maintenance' and year_created = '2017';
 ```

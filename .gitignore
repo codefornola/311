@@ -1,3 +1,4 @@
 .DS_Store
 data/nola311_raw.csv
 app/package-lock.json
+env/*
