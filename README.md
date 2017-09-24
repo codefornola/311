@@ -28,9 +28,9 @@ Other nice to have features:
 ## prerequisites
 
 Download and install Python and Node.js. The links for the download pages are listed below.
-https://www.python.org/downloads/
-https://nodejs.org/en/download/current/
 
+* https://www.python.org/downloads/
+* https://nodejs.org/en/download/current/
 
 ## database setup
 
