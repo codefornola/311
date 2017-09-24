@@ -1,4 +1,4 @@
-# 311 app 
+# 311 app
 
 We want to build something better than the default Socrata 311 site:
 http://311explorer.nola.gov/main/category/
@@ -28,7 +28,7 @@ Other nice to have features:
 ## prerequisites
 
 Download and install Python and Node.js. The links for the download pages are listed below.
-https://www.python.org/downloads/  
+https://www.python.org/downloads/
 https://nodejs.org/en/download/current/
 
 
@@ -49,7 +49,33 @@ to tell the script where to load:
 NOLA311_DB_USER=nola311 NOLA311_DB_NAME=nola311 NOLA311_DB_HOST=c2rp0kujqp.us-east-1.rds.amazonaws.com NOLA311_DB_PORT=5432 ./setup.sh
 ```
 
-## some sample queries
+## app setup
+
+This app uses Docker for deployment configuration.
+
+To setup for development, first ensure you have the following environment variables available. Some good assumptions for local development (assuming you followed the database setup instructions above) for each are included for your copy-paste pleasure.
+
+```
+export NOLA311_DB_HOST=localhost
+export NOLA311_DB_PORT=5432
+export NOLA311_DB_NAME=nola311
+export NOLA311_DB_USER=nola311
+export NOLA311_DB_PASSWORD=
+```
+
+After you make changes to the code, you can do the following:
+```
+docker-compose build
+docker-compose up
+```
+
+Once complete, the app will be available on port `3000`, and logs should display in the command-line terminal.
+
+If you're using Docker Toolbox, this will be on your `docker-machine` IP address, which you can get via `docker-machine ip default` or `docker-machine ip dev`.
+
+If you're on Docker for Mac, this will be on `localhost`.
+
+## some sample queries on the database
 
 Login to the db with psql `psql -h localhost -U nola311` and run some queries:
 
