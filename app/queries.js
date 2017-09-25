@@ -9,7 +9,7 @@ var dbUrl = process.env.DATABASE_URL || 'postgres://localhost:5432/nola311';
 var db = pgp(dbUrl);
 
 function findAllCalls(req, res, next) {
-  let pageSize = req.query.pageSize ? parseInt(req.query.pageSize) : 50;
+  let pageSize = req.query.pageSize ? parseInt(req.query.pageSize, 10) : 50;
 
   db.any('select * from nola311.calls limit $1', pageSize)
     .then(function (data) {
@@ -46,5 +46,5 @@ function findCallTypeTotals(req, res, next) {
 module.exports = {
     findAllCalls: findAllCalls,
     findCallsByTicketId: findCallsByTicketId,
-    findCallTypeTotals: findCallTypeTotals,
+    findCallTypeTotals: findCallTypeTotals
 };
