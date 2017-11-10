@@ -2,6 +2,10 @@
   "name": "nola311-app",
   "version": "0.0.1",
   "main": "server.js",
+  "scripts": {
+    "test": "echo \"Write some tests!\"",
+    "start": "npm start server.js"
+  },
   "dependencies": {
     "bluebird": "^3.3.4",
     "body-parser": "~1.15.2",
