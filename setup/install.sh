@@ -16,3 +16,4 @@ psql -U $NOLA311_DB_USER -d $NOLA311_DB_NAME -h $NOLA311_DB_HOST -p $NOLA311_DB_
 psql -U $NOLA311_DB_USER -d $NOLA311_DB_NAME -h $NOLA311_DB_HOST -p $NOLA311_DB_PORT -f views/closed_tickets_stats.sql -q
 psql -U $NOLA311_DB_USER -d $NOLA311_DB_NAME -h $NOLA311_DB_HOST -p $NOLA311_DB_PORT -f views/call_records_for_review.sql -q
 psql -U $NOLA311_DB_USER -d $NOLA311_DB_NAME -h $NOLA311_DB_HOST -p $NOLA311_DB_PORT -f views/call_records_with_call_for_details.sql -q
+psql -U $NOLA311_DB_USER -d $NOLA311_DB_NAME -h $NOLA311_DB_HOST -p $NOLA311_DB_PORT -f views/open_tickets_neighborhood_summary.sql -q
