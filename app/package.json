@@ -1,6 +1,12 @@
 {
   "name": "nola311-app",
+  "description": "311 open data exploration app for New Orleans, LA",
   "version": "0.0.1",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/codefornola/311.git"
+  },
   "main": "server.js",
   "scripts": {
     "test": "echo \"Write some tests!\"",
