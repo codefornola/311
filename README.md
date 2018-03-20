@@ -1,4 +1,4 @@
-# 311 app
+# 311 app [![Build Status](https://travis-ci.org/codefornola/311.svg?branch=master)](https://travis-ci.org/codefornola/311)
 
 **Docker Image** [![](https://images.microbadger.com/badges/image/codefornola/311.svg)](https://microbadger.com/images/codefornola/311 "Get your own image badge on microbadger.com") [![](https://images.microbadger.com/badges/version/codefornola/311.svg)](https://microbadger.com/images/codefornola/311 "Get your own version badge on microbadger.com") [![](https://images.microbadger.com/badges/commit/codefornola/311.svg)](https://microbadger.com/images/codefornola/311 "Get your own commit badge on microbadger.com")
 
