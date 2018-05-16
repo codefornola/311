@@ -1,0 +1,18 @@
+version: "2"
+services:
+  server:
+    build:
+      context: '.'
+    environment:
+      NOLA311_DB_USER: nola311
+      NOLA311_DB_NAME: nola311
+      NOLA311_DB_HOST: db
+      NOLA311_DB_PORT: 5432
+      NOLA311_DB_PASSWORD: nola311
+    ports:
+      - 3000:3000
+    links:
+      - db:db
+  db:
+    build:
+      context: '../db'

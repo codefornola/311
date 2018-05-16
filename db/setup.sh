@@ -7,7 +7,7 @@ NOLA311_DB_HOST=${NOLA311_DB_HOST:-localhost}
 NOLA311_DB_PORT=${NOLA311_DB_PORT:-5432}
 NOLA311_DB_NAME=${NOLA311_DB_NAME:-nola311}
 
-if [ $NOLA311_DB_HOST == "localhost" ]; then
+if [ ! -f /.dockerenv ] && [ $NOLA311_DB_HOST == "localhost" ]; then
   echo ""
   echo "Creating nola311 user and database"
   echo ""
@@ -15,7 +15,7 @@ if [ $NOLA311_DB_HOST == "localhost" ]; then
   createdb nola311 -O nola311
 else
   echo ""
-  echo "Skipping creation of user and database: not on localhost"
+  echo "Skipping creation of user and database: not on localhost or running within container"
   echo ""
 fi
 
