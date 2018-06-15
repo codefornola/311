@@ -2,12 +2,14 @@
 #!/usr/bin/bash
 #!/usr/local/bin/bash
 
-NOLA311_DB_USER=${NOLA311_DB_USER:-postgres}
-NOLA311_DB_HOST=${NOLA311_DB_HOST:-localhost}
-NOLA311_DB_PORT=${NOLA311_DB_PORT:-5432}
-NOLA311_DB_NAME=${NOLA311_DB_NAME:-nola311}
+export NOLA311_DB_USER=${NOLA311_DB_USER:-nola311}
+export NOLA311_DB_PASSWORD=${NOLA311_DB_PASSWORD:-nola311}
+export NOLA311_DB_HOST=${NOLA311_DB_HOST:-localhost}
+export NOLA311_DB_PORT=${NOLA311_DB_PORT:-5432}
+export NOLA311_DB_NAME=${NOLA311_DB_NAME:-nola311}
+export NOLA311_DB_URI="postgresql://${NOLA311_DB_USER}:${NOLA311_DB_PASSWORD}@${NOLA311_DB_HOST}:${NOLA311_DB_PORT}/${NOLA311_DB_NAME}"
 
-if [ $NOLA311_DB_HOST == "localhost" ]; then
+if [ ! -z $NOLA311_CREATE_USER ]; then
   echo ""
   echo "Creating nola311 user and database"
   echo ""
@@ -15,7 +17,7 @@ if [ $NOLA311_DB_HOST == "localhost" ]; then
   createdb nola311 -O nola311
 else
   echo ""
-  echo "Skipping creation of user and database: not on localhost"
+  echo "Skipping creation of user and database"
   echo ""
 fi
 

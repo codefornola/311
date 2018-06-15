@@ -29,16 +29,16 @@ Other nice to have features:
 
 ## prerequisites
 
-Download and install Python and Node.js. The links for the download pages are listed below.
-
-* https://www.python.org/downloads/
-* https://nodejs.org/en/download/current/
+Ensure you have installed [Node.js](https://nodejs.org/en/download/current/) and [Docker](https://www.docker.com/community-edition).
 
 ## database setup
 
-First you need to install PostgreSQL and PostGIS.
+For local development, you can use Docker to setup the database
+```
+docker-compose up -d db
+```
 
-Once those are available, you can run the `setup.sh` script:
+Then you can run the `setup.sh` script to download the data and load it into the database.
 
 ```
 ./setup.sh
@@ -49,37 +49,18 @@ to tell the script where to load:
 
 ```
 NOLA311_DB_USER=nola311 \
-  NOLA311_DB_NAME=nola311 \
-  NOLA311_DB_HOST=c2rp0kujqp.us-east-1.rds.amazonaws.com \
-  NOLA311_DB_PORT=5432 \
-  ./setup.sh
+NOLA311_DB_NAME=nola311 \
+NOLA311_DB_HOST=c2rp0kujqp.us-east-1.rds.amazonaws.com \
+NOLA311_DB_PORT=5432 \
+./setup.sh
 ```
 
 ## app setup
 
-This app uses Docker for deployment configuration.
-
-To setup for development, first ensure you have the following environment variables available. Some good assumptions for local development (assuming you followed the database setup instructions above) for each are included for your copy-paste pleasure.
-
+For local development, you can use Docker to run the application
 ```
-export NOLA311_DB_HOST=localhost
-export NOLA311_DB_PORT=5432
-export NOLA311_DB_NAME=nola311
-export NOLA311_DB_USER=nola311
-export NOLA311_DB_PASSWORD=
+docker-compose up -d app
 ```
-
-After you make changes to the code, you can do the following:
-```
-docker-compose build
-docker-compose up
-```
-
-Once complete, the app will be available on port `3000`, and logs should display in the command-line terminal.
-
-If you're using Docker Toolbox, this will be on your `docker-machine` IP address, which you can get via `docker-machine ip default` or `docker-machine ip dev`.
-
-If you're on Docker for Mac, this will be on `localhost`.
 
 ## some sample queries on the database
 
@@ -102,12 +83,12 @@ order by num_calls desc;
 select ticket_status, count(*) as total
 from nola311.calls
 where issue_type = 'Pothole/Roadway Surface Repair'
-  and ticket_created_date_time >= '2017-01-01'::date
+and ticket_created_date_time >= '2018-01-01'::date
 group by ticket_status;
 
 --- dont forget to checkout the views
 select *
 from open_tickets_stats
 where issue_type = 'Catch Basin Maintenance'
-  and year_created = '2017';
+and year_created = '2018';
 ```

@@ -1,0 +1,16 @@
+version: '2'
+services:
+  app:
+    build:
+      context: ./app
+    environment:
+      - DATABASE_URL=postgresql://nola311:nola311@db:5432/nola311
+    ports:
+      - 3000:3000
+  db:
+    image: mdillon/postgis:10-alpine
+    environment:
+      - POSTGRES_USER=nola311
+      - POSTGRES_PASSWORD=nola311
+    ports:
+      - 5432:5432
