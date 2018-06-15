@@ -2,11 +2,6 @@
 #!/usr/bin/bash
 #!/usr/local/bin/bash
 
-NOLA311_DB_USER=${NOLA311_DB_USER:-postgres}
-NOLA311_DB_HOST=${NOLA311_DB_HOST:-localhost}
-NOLA311_DB_PORT=${NOLA311_DB_PORT:-5432}
-NOLA311_DB_NAME=${NOLA311_DB_NAME:-nola311}
-
 # sanitize the tables
 psql -U $NOLA311_DB_USER -d $NOLA311_DB_NAME -h $NOLA311_DB_HOST -p $NOLA311_DB_PORT -f setup/sanitize_call_data.sql
 psql -U $NOLA311_DB_USER -d $NOLA311_DB_NAME -h $NOLA311_DB_HOST -p $NOLA311_DB_PORT -f setup/sanitize_neighborhood_data.sql
