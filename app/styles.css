@@ -16,7 +16,7 @@ html, body {
   flex: 2;       /* Fill the available space */
 }
 .filter-panel {
-  font: 12px/20px Arial;
+  font: 12px/20px 'Open Sans';
   position: absolute;
   width: 25%;
   top: 0;
