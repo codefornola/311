@@ -57,9 +57,9 @@ NOLA311_DB_PORT=5432 \
 
 ## app setup
 
-For local development, you can use Docker to run the application 
+For local development, you can use Docker to run the application
 ```
-docker-compose up -d db
+docker-compose up -d app
 ```
 
 ## some sample queries on the database
