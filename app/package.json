@@ -10,7 +10,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Write some tests!\"",
-    "start": "npm start server.js"
+    "start": "node server.js"
   },
   "dependencies": {
     "bluebird": "^3.3.4",
