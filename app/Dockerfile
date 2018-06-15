@@ -1,4 +1,4 @@
-FROM node
+FROM node:carbon-alpine
 ARG BUILD_DATE
 ARG VCS_REF
 LABEL org.label-schema.build-date=$BUILD_DATE \
@@ -11,4 +11,4 @@ COPY package.json .
 RUN npm install
 COPY . .
 EXPOSE 3000
-CMD "./startapp.sh"
+CMD [ "npm", "start" ]
