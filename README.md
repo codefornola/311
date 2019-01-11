@@ -2,10 +2,11 @@
 
 **Docker Image** [![](https://images.microbadger.com/badges/image/codefornola/311.svg)](https://microbadger.com/images/codefornola/311 "Get your own image badge on microbadger.com") [![](https://images.microbadger.com/badges/version/codefornola/311.svg)](https://microbadger.com/images/codefornola/311 "Get your own version badge on microbadger.com") [![](https://images.microbadger.com/badges/commit/codefornola/311.svg)](https://microbadger.com/images/codefornola/311 "Get your own commit badge on microbadger.com")
 
-We want to build something better than the default Socrata 311 site:
-http://311explorer.nola.gov/main/category/
+The city now has a pretty good site for vizualizing the 311 (and other open data) so you should check it out here: https://explore.nola.gov/
 
-Here are some vague user stories explaining the main features:
+Also, you can submit a 311 ticket online now! https://www.nola.gov/311/
+
+This purpose of this project will now focus on working with the 311 data for data analysis use cases.  
 
 As a citizen,
 * I want to lookup info about my 311 request (by entering a reference # received from 311 or searching my previous history).
