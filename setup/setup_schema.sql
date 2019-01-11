@@ -18,7 +18,9 @@ create table nola311.calls_tmp (
   location                  text,
   geom                      text,
   latitude                  numeric,
-  longitude                 numeric
+  longitude                 numeric,
+  closure_reason            text,
+  case_title                text
 );
 
 drop table if exists nola311.neighborhood_areas_tmp cascade;
