@@ -30,7 +30,7 @@ Other nice to have features:
 
 ## prerequisites
 
-Ensure you have installed [Node.js](https://nodejs.org/en/download/current/) and [Docker](https://www.docker.com/community-edition).
+Ensure you have installed [Docker](https://www.docker.com/community-edition).
 
 ## database setup
 
@@ -54,13 +54,6 @@ NOLA311_DB_NAME=nola311 \
 NOLA311_DB_HOST=c2rp0kujqp.us-east-1.rds.amazonaws.com \
 NOLA311_DB_PORT=5432 \
 ./setup.sh
-```
-
-## app setup
-
-For local development, you can use Docker to run the application
-```
-docker-compose up -d app
 ```
 
 ## some sample queries on the database
