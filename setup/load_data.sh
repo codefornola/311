@@ -18,7 +18,7 @@ echo "Loading data from $call_data_file"
 echo "This may take a minute..."
 echo ""
 psql $NOLA311_DB_URI \
-     -c "\copy nola311.calls_tmp(ticket_id,issue_type,ticket_created_date_time,ticket_closed_date_time,ticket_status,issue_description,street_address,neighborhood_district,council_district,city,state,zip_code,location,geom,latitude,longitude) from '$call_data_file' with csv header NULL as '';"
+     -c "\copy nola311.calls_tmp(ticket_id,issue_type,ticket_created_date_time,ticket_closed_date_time,ticket_status,issue_description,street_address,neighborhood_district,council_district,city,state,zip_code,location,geom,latitude,longitude,closure_reason,case_title) from '$call_data_file' with csv header NULL as '';"
 
 echo ""
 echo "Loading data from $neighborhood_areas_file"

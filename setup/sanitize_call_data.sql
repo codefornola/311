@@ -15,7 +15,9 @@ create table nola311.calls as (
     state,
     zip_code,
     location,
-    st_pointfromtext('POINT(' || longitude || ' ' || latitude || ')', 4326) as geom
+    st_pointfromtext('POINT(' || longitude || ' ' || latitude || ')', 4326) as geom,
+    closure_reason,
+    case_title
   from nola311.calls_tmp
 );
 
