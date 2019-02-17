@@ -8,31 +8,19 @@ Also, you can submit a 311 ticket online now! https://www.nola.gov/311/
 
 This purpose of this project will now focus on working with the 311 data for data analysis use cases.  
 
-As a citizen,
-* I want to lookup info about my 311 request (by entering a reference # received from 311 or searching my previous history).
-* I want to visualize ticket types with bar charts (counts) and pie graphs (percentage).
-* I want to visualize the data on a map around me and filter and sort by ticket type, open/closed, date range.
-* I want to browse curated datasets before exploring the data myself (maybe showing less data that's
-more recent data will be useful; maybe by sharing my location, I can see more relevant data on a map
-zoomed to my address).
-* I want to see open requests near me.
-* I want to submit issues that integrate with the City's system (the city 311 system can notify the user).
-* I want the ability to choose the amount of information to share about myself (email required to submit ticket?)
 
-Other nice to have features:
-* Commenting and upvoting on issues nearby me
-* Get notified about issues created by others (star/follow)
-* See filter of all issues a user has submitted (email required)
-* Map feature: Request per district (styled where color gets darker for more requests)
-* Frequency: analyze the frequency of 311 incidents (median time, types
-  that stay open the longest, etc)
+## Prerequisites
+
+Ensure you have [Docker](https://www.docker.com/community-edition) b/c that makes the database installation easier.
+
+You will also need to install Python and Jupiter Notebooks to work with the data.  We recommend downloading 
+[Anaconda](https://www.anaconda.com/download/) to do this. 
+
+> You probably want to download the Python 3 version b/c Python 2 will become unsupported [soon](https://pythonclock.org/)
 
 
-## prerequisites
 
-Ensure you have installed [Node.js](https://nodejs.org/en/download/current/) and [Docker](https://www.docker.com/community-edition).
-
-## database setup
+## Database setup
 
 For local development, you can use Docker to setup the database
 ```
@@ -56,12 +44,14 @@ NOLA311_DB_PORT=5432 \
 ./setup.sh
 ```
 
-## app setup
+### Getting Started
 
-For local development, you can use Docker to run the application
+Once `jupiter` is installed, you can start the notebook server and open the "Getting Started" notebook
+
 ```
-docker-compose up -d app
+jupyter notebook Getting_Started.ipynb
 ```
+
 
 ## some sample queries on the database
 
